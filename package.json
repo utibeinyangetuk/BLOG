@@ -1,0 +1,49 @@
+{
+  "name": "blog-v1",
+  "version": "1.0.0",
+  "description": "A simple blog website",
+  "private": true,
+  "main": "app.js",
+  "scripts": {
+    "migrate": "knex migrate:latest",
+    "rollback": "knex migrate:rollback",
+    "seed": "knex seed:run ",
+    "start": "nodemon app.js"
+  },
+  "author": "utibe",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.19.0",
+    "connect-flash": "^0.1.1",
+    "cookie-parser": "^1.4.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-handlebars": "^5.3.2",
+    "express-messages": "^1.0.1",
+    "express-session": "^1.17.2",
+    "express-validator": "^6.12.1",
+    "knex": "^0.95.9",
+    "knex-paginate": "^2.3.0",
+    "method-override": "^3.0.0",
+    "moment": "^2.29.1",
+    "multer": "^1.4.3",
+    "mysql": "^2.18.1",
+    "nodemailer": "^6.6.3",
+    "passport": "^0.4.1",
+    "passport-local": "^1.0.0",
+    "pg": "^8.7.1",
+    "request": "^2.88.2"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/utibeinyangetuk/BLOG.git"
+  },
+  "bugs": {
+    "url": "https://github.com/utibeinyangetuk/BLOG/issues"
+  },
+  "homepage": "https://github.com/utibeinyangetuk/BLOG#readme",
+  "devDependencies": {
+    "nodemon": ">=2.0.12"
+  }
+}
