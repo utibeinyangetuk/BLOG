@@ -1,19 +1,29 @@
 const router = require("express").Router()
 const bcrypt = require("bcrypt")
+const passport = require("passport")
 
 // TODO move this out too
+// require the database file
 const knex = require("../config/database")
 
+// check user authentication
+const Check = (req, res, next) => {
+  if (req.isAuthenticated()) {
+    return res.redirect("/account")
+  }
+  next()
+}
+
 // TODO move routes to controller
-router.get("/", function (req, res, next) {
+router.get("/", (req, res, next) => {
   res.render("index", { title: "welcome page" })
 })
-router.get("/signup", (req, res, next) => {
+router.get("/signup", Check, (req, res, next) => {
   res.render("signup", {
     title: "create an account",
   })
 })
-router.get("/login", (req, res, next) => {
+router.get("/login", Check, (req, res, next) => {
   res.render("login", {
     title: "Log into your account",
   })
@@ -25,6 +35,7 @@ router.post("/signup", async (req, res) => {
   // TODO take out this log
   // console.log({ username, email, password, confirm_password })
 
+  // form validation
   let errors = []
   if (!username || !email || !password || !confirm_password) {
     errors.push({ message: "Please enter all fields" })
@@ -48,11 +59,12 @@ router.post("/signup", async (req, res) => {
       .whereRaw("email=?", [req.body.email])
       .then((results) => {
         if (results.length > 0) {
-          console.log("code reaches here")
+          // TODO: Also take this part out
           console.log("if youre seeing this then there is an email error")
           errors.push({ message: "Email is already in use" })
           res.render("signup", { errors })
         } else {
+          // TODO: take out this part
           console.log("inserting data....")
           knex("users")
             .insert([
@@ -63,6 +75,7 @@ router.post("/signup", async (req, res) => {
               },
             ])
             .then((value) => {
+              // TODO Remove these logs
               console.log(value)
               console.log("data inserted successfully.")
               req.flash("success_msg", "Registration successful,Please login")
@@ -78,5 +91,18 @@ router.post("/signup", async (req, res) => {
       })
   }
 })
+
+// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+// FIXME: problem dey this route---[when i remove the passport.authenticate,the route works well but when i leave it,it throws a missing credentials error]
+
+router.post(
+  "/login",
+  passport.authenticate("local", {
+    successRedirect: "/account",
+    failureRedirect: "/login",
+    failureFlash: true,
+  })
+)
 
 module.exports = router

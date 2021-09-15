@@ -3,6 +3,10 @@ const express = require("express")
 const session = require("express-session")
 const exphbs = require("express-handlebars")
 const flash = require("express-flash")
+const passport = require("passport")
+
+const initializePassport = require("./config/passportconfig")
+initializePassport(passport)
 
 // Import route files
 const indexRouter = require("./routes/index")
@@ -27,6 +31,13 @@ app.use(express.static(__dirname + "/public"))
 app.use(
   session({ secret: "somesecretkey", resave: false, saveUninitialized: false })
 )
+
+
+
+app.use(passport.initialize())
+app.use(passport.session())
+
+
 app.use(flash())
 
 // routes
@@ -48,6 +59,7 @@ app.use(function (err, req, res, next) {
   res.status(err.status || 500)
   res.render("error")
 })
+
 
 // starting the server
 app.listen(PORT, () => {
