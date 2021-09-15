@@ -45,14 +45,32 @@ router.post("/signup", async (req, res) => {
     // console.log(hashedPassword)
 
     await knex("users")
+      .whereRaw("email=?", [req.body.email])
       .then((results) => {
-        // console.log(results)
-
         if (results.length > 0) {
           console.log("code reaches here")
-          console.log("if youre seeing this then there is an error")
+          console.log("if youre seeing this then there is an email error")
           errors.push({ message: "Email is already in use" })
           res.render("signup", { errors })
+        } else {
+          console.log("inserting data....")
+          knex("users")
+            .insert([
+              {
+                email: req.body.email,
+                password: hashedPassword,
+                username: req.body.username,
+              },
+            ])
+            .then((value) => {
+              console.log(value)
+              console.log("data inserted successfully.")
+              req.flash("success_msg", "Registration successful,Please login")
+              res.redirect("/login")
+            })
+            .catch((err) => {
+              throw err
+            })
         }
       })
       .catch((err) => {
