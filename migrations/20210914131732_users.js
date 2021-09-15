@@ -1,12 +1,12 @@
-exports.up = function (knex) {
+exports.up = (knex) => {
   return (
     knex.schema
       // create the users table
       .createTable("users", (table) => {
         table.increments("id")
-        table.string("name")
+        table.string("username")
         table.string("email").unique()
-        table.string("password")
+        table.string("password").notNullable()
         table.timestamps(true, true)
       })
       // create the posts table
@@ -39,6 +39,6 @@ exports.up = function (knex) {
   )
 }
 
-exports.down = function (knex) {
+exports.down = (knex) => {
   return knex.schema.dropTable("comments").dropTable("posts").dropTable("users")
 }

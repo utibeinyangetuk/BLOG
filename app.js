@@ -1,37 +1,55 @@
-var express = require('express');
-var path = require('path');
+require("dotenv").config()
+const express = require("express")
+const session = require("express-session")
+const exphbs = require("express-handlebars")
+const flash = require("express-flash")
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+// Import route files
+const indexRouter = require("./routes/index")
+const accountRouter = require("./routes/account")
 
-var app = express();
+// Initialize express
+const app = express()
+const PORT = process.env.PORT || 5000
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+// view engine setup[handlebars]
+const hbs = exphbs.create({
+  extname: "hbs",
+  defaultLayout: "main",
+})
+app.engine("hbs", hbs.engine)
+app.set("view engine", "hbs")
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(express.static(path.join(__dirname, 'public')));
+// setting up all middlewares
+app.use(express.json())
+app.use(express.urlencoded({ extended: false }))
+app.use(express.static(__dirname + "/public"))
+app.use(
+  session({ secret: "somesecretkey", resave: false, saveUninitialized: false })
+)
+app.use(flash())
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// routes
+app.use("/", indexRouter)
+app.use("/account", accountRouter)
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
+app.use(function (req, res, next) {
+  next(createError(404))
+})
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.message = err.message
+  res.locals.error = req.app.get("env") === "development" ? err : {}
 
   // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
+  res.status(err.status || 500)
+  res.render("error")
+})
 
-module.exports = app;
+// starting the server
+app.listen(PORT, () => {
+  console.log(`> server running on http://localhost:${PORT}`)
+})
