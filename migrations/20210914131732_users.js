@@ -40,5 +40,7 @@ exports.up = (knex) => {
 }
 
 exports.down = (knex) => {
-  return knex.schema.dropTable("comments").dropTable("posts").dropTable("users")
+  return knex.schema.dropTable("comments")
+                    .dropTable("posts")
+                    .dropTable("users")
 }

@@ -1,13 +1,21 @@
 const router = require("express").Router()
 const bcrypt = require("bcrypt")
+const { authenticate } = require("passport")
 const passport = require("passport")
+const { Pool } = require("pg")
 
-// TODO move this out too
-// require the database file
-const knex = require("../config/database")
+const pool = new Pool({
+  user: process.env.DATABASE_USER,
+  host: process.env.DATABASE_HOST,
+  database: process.env.DATABASE_NAME,
+  password: process.env.DATABASE_PASSWORD,
+  port: "5432",
+})
 
-// check user authentication
-const Check = (req, res, next) => {
+/*
+ Middleware that checks if the user is already logged in and then restricts the user from accessing this route again untill user logs out
+ */
+function authenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return res.redirect("/account")
   }
@@ -15,26 +23,32 @@ const Check = (req, res, next) => {
 }
 
 // TODO move routes to controller
+
+// GET ROUTES
 router.get("/", (req, res, next) => {
   res.render("index", { title: "welcome page" })
 })
-router.get("/signup", Check, (req, res, next) => {
-  res.render("signup", {
+router.get("/register", authenticated, (req, res, next) => {
+  res.render("register", {
     title: "create an account",
   })
 })
-router.get("/login", Check, (req, res, next) => {
+router.get("/login", authenticated, (req, res, next) => {
   res.render("login", {
     title: "Log into your account",
   })
 })
 
-//TODO move this route to a controller
-router.post("/signup", async (req, res) => {
+// POST ROUTES
+router.post("/register", async (req, res) => {
+  // TODO remove this
   let { username, email, password, confirm_password } = req.body
-  // TODO take out this log
-  // console.log({ username, email, password, confirm_password })
-
+  console.log({
+    username,
+    email,
+    password,
+    confirm_password,
+  })
   // form validation
   let errors = []
   if (!username || !email || !password || !confirm_password) {
@@ -48,53 +62,42 @@ router.post("/signup", async (req, res) => {
     errors.push({ message: "Passwords do not match" })
   }
   if (errors.length > 0) {
-    res.render("signup", { errors })
+    res.render("register", { errors })
   } else {
     // form validation has passed
     let hashedPassword = await bcrypt.hash(password, 10)
-    // TODO take this out
-    // console.log(hashedPassword)
+    // TODO remove this
+    console.log("HashedPassword:", hashedPassword)
 
-    await knex("users")
-      .whereRaw("email=?", [req.body.email])
-      .then((results) => {
-        if (results.length > 0) {
-          // TODO: Also take this part out
-          console.log("if youre seeing this then there is an email error")
-          errors.push({ message: "Email is already in use" })
-          res.render("signup", { errors })
-        } else {
-          // TODO: take out this part
-          console.log("inserting data....")
-          knex("users")
-            .insert([
-              {
-                email: req.body.email,
-                password: hashedPassword,
-                username: req.body.username,
-              },
-            ])
-            .then((value) => {
-              // TODO Remove these logs
-              console.log(value)
-              console.log("data inserted successfully.")
-              req.flash("success_msg", "Registration successful,Please login")
-              res.redirect("/login")
-            })
-            .catch((err) => {
-              throw err
-            })
+    // checks database to see if the email already exists
+    pool.query(
+      `SELECT * from users WHERE email=$1`,
+      [email],
+      (err, results) => {
+        if (err) {
+          throw err
         }
-      })
-      .catch((err) => {
-        throw err
-      })
+        if (results.rows.length > 0) {
+          errors.push({ message: "Email already exists" })
+          res.render("register", { errors })
+        } else {
+          pool.query(
+            `INSERT INTO users (username,email,password) VALUES ($1,$2,$3)`,
+            [username, email, hashedPassword],
+            (err, results) => {
+              if (err) {
+                throw err
+              }
+              console.log(results.rows)
+              req.flash("success_msg", "Registration Successful,Please Login")
+              res.redirect("/login")
+            }
+          )
+        }
+      }
+    )
   }
 })
-
-// ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-// FIXME: problem dey this route---[when i remove the passport.authenticate,the route works well but when i leave it,it throws a missing credentials error]
 
 router.post(
   "/login",
@@ -104,5 +107,14 @@ router.post(
     failureFlash: true,
   })
 )
+
+
+
+
+
+
+
+
+
 
 module.exports = router

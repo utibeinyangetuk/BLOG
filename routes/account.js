@@ -1,20 +1,19 @@
 var router = require("express").Router()
 
-// user validation
-const Notcheck = (req, res, next) => {
+
+
+function Notauthenticated(req, res, next) {
   if (req.isAuthenticated()) {
     return next()
   }
-  res.redirect('/login');
+  res.redirect("/login")
 }
 
-
-
 /* GET account listing. */
-router.get("/", Notcheck, function (req, res, next) {
+router.get("/", Notauthenticated, function (req, res, next) {
   res.render("account", {
     title: "Account",
-    user: req.user.username,
+    user:req.user.username
   })
 })
 
