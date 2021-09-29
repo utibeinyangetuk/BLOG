@@ -19,11 +19,8 @@ const initialize = (passport) => {
         if (err) {
           throw err
         }
-        console.log(results.rows)
-
         if (results.rows.length > 0) {
           const user = results.rows[0]
-
           bcrypt.compare(password, user.password, (err, isMatch) => {
             if (err) {
               throw err

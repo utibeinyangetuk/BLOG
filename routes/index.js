@@ -2,20 +2,11 @@ const router = require("express").Router()
 const bcrypt = require("bcrypt")
 const { authenticate } = require("passport")
 const passport = require("passport")
-const { Pool } = require("pg")
 
-const pool = new Pool({
-  user: process.env.DATABASE_USER,
-  host: process.env.DATABASE_HOST,
-  database: process.env.DATABASE_NAME,
-  password: process.env.DATABASE_PASSWORD,
-  port: "5432",
-})
+const knex = require("../config/database")
 
-/*
- Middleware that checks if the user is already logged in and then restricts the user from accessing this route again untill user logs out
- */
-function authenticated(req, res, next) {
+// Function to check if the user is already logged in
+const authenticated = (req, res, next) => {
   if (req.isAuthenticated()) {
     return res.redirect("/account")
   }
@@ -25,7 +16,7 @@ function authenticated(req, res, next) {
 // TODO move routes to controller
 
 // GET ROUTES
-router.get("/", (req, res, next) => {
+router.get("/", authenticated, (req, res, next) => {
   res.render("index", { title: "welcome page" })
 })
 router.get("/register", authenticated, (req, res, next) => {
@@ -41,14 +32,8 @@ router.get("/login", authenticated, (req, res, next) => {
 
 // POST ROUTES
 router.post("/register", async (req, res) => {
-  // TODO remove this
   let { username, email, password, confirm_password } = req.body
-  console.log({
-    username,
-    email,
-    password,
-    confirm_password,
-  })
+
   // form validation
   let errors = []
   if (!username || !email || !password || !confirm_password) {
@@ -64,38 +49,31 @@ router.post("/register", async (req, res) => {
   if (errors.length > 0) {
     res.render("register", { errors })
   } else {
-    // form validation has passed
+    //If form validation has passed
     let hashedPassword = await bcrypt.hash(password, 10)
-    // TODO remove this
-    console.log("HashedPassword:", hashedPassword)
-
-    // checks database to see if the email already exists
-    pool.query(
-      `SELECT * from users WHERE email=$1`,
-      [email],
-      (err, results) => {
-        if (err) {
-          throw err
-        }
-        if (results.rows.length > 0) {
-          errors.push({ message: "Email already exists" })
+    await knex("users")
+      .whereRaw("email=?", [email])
+      .then((results) => {
+        if (results.rows > 0) {
+          errors.push({ message: "Email is already in use" })
           res.render("register", { errors })
         } else {
-          pool.query(
-            `INSERT INTO users (username,email,password) VALUES ($1,$2,$3)`,
-            [username, email, hashedPassword],
-            (err, results) => {
-              if (err) {
-                throw err
-              }
-              console.log(results.rows)
-              req.flash("success_msg", "Registration Successful,Please Login")
+          knex("users")
+            .insert([
+              { email: email, password: hashedPassword, username: username },
+            ])
+            .then((results) => {
+              req.flash("success_msg", "Registration successful,Please login")
               res.redirect("/login")
-            }
-          )
+            })
+            .catch((err) => {
+              throw err
+            })
         }
-      }
-    )
+      })
+      .catch((err) => {
+        throw err
+      })
   }
 })
 
@@ -107,14 +85,4 @@ router.post(
     failureFlash: true,
   })
 )
-
-
-
-
-
-
-
-
-
-
 module.exports = router
