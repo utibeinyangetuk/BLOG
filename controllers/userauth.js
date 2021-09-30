@@ -1,5 +1,4 @@
 const bcrypt = require("bcrypt")
-const knex = require("../config/database")
 const Usermodel = require("../models/user")
 
 module.exports = {
@@ -23,32 +22,13 @@ module.exports = {
     } else {
       //If form validation has passed
       let hashedPassword = await bcrypt.hash(password, 10)
-    //   await knex("users")
-    //     .whereRaw("email=?", [email])
-
-
-user=Usermodel.select()
-
-
+     await Usermodel.select()
         .then((results) => {
-
-
-
-
-
-
-
-
-
-
           if (results.rows > 0) {
-            errors.push({ message: "Email is already in use" })
+            errors.push({ message: "User already exist" })
             res.render("register", { errors })
-          }
-
-
-          else {
-            user = Usermodel.insert([
+          } else {
+            Usermodel.insert([
               {
                 username: username,
                 email: email,
@@ -56,7 +36,7 @@ user=Usermodel.select()
               },
             ])
               .then(() => {
-                req.flash("success_msg", "Registration successful,Please login")
+                req.flash("success_msg", "Registration successful,please login")
                 res.redirect("/login")
               })
               .catch((err) => {
