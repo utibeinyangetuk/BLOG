@@ -1,10 +1,14 @@
 const knex = require("../config/database")
-
+const { select } = require("../models/post")
 module.exports = {
-	account: (req, res) => {
-		res.render("account", {
-			title: "Account",
-			user: req.user.username,
+	account: async (req, res) => {
+		await select().then((results) => {
+			res.render("account", {
+				title: "Account",
+				user: req.user.username,
+				post: results,
+				author_name: req.user.username,
+			})
 		})
 	},
 

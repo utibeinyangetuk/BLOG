@@ -18,6 +18,12 @@ exports.up = (knex) => {
           .references("id")
           .inTable("users")
           .onDelete("CASCADE")
+          table
+						.string("author_name")
+						.notNullable()
+						.references("username")
+						.inTable("users")
+						.onDelete("CASCADE")
         table.string("title").notNullable()
         table.text("content")
         table.timestamps(true, true)

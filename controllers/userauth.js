@@ -1,5 +1,5 @@
 const bcrypt = require("bcrypt")
-const Usermodel = require("../models/user")
+const { insert,select } = require("../models/user")
 
 module.exports = {
 	Register: async (req, res) => {
@@ -22,13 +22,13 @@ module.exports = {
 		} else {
 			//If form validation has passed
 			let hashedPassword = await bcrypt.hash(password, 10)
-			await Usermodel.select()
+			await select()
 				.then((results) => {
 					if (results.rows > 0) {
 						errors.push({ message: "User already exist" })
 						res.render("register", { errors })
 					} else {
-						Usermodel.insert([
+						insert([
 							{
 								username: username,
 								email: email,

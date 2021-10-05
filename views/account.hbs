@@ -5,6 +5,18 @@
 
 <br>
 
+<ul>
+    {{#if messages.success_msg}}
+        <li>{{messages.success_msg}}</li>
+    {{/if}}
+</ul>
+
+<ul>
+    {{#if messages.error}}
+        <li>{{messages.error}}</li>
+    {{/if}}
+</ul>
+
 <div class="container">
     <div class="heading">
         <h2>Latest posts</h2>
@@ -15,15 +27,15 @@
                 <div class="blog">
                     <img src="images/9.jpg" alt="#">
                     <div class="content">
-                        <h2>{{title}}</h2>
-                        <span>by utibe inyangetuk</span>
-                        <p>{{content}} </p>
+                        <h2>Title: {{title}}</h2>
+                        <span>By: {{author_name}} <br></span>
+                        <p>Body: {{content}} </p>
                         <a href="#" class="readmore">continue reading</a>
                     </div>
                 </div>
+                <hr>
 
         {{/each}}
-</div>
-
-</form>
+        </div>
+    </form>
 </div>
