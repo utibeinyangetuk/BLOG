@@ -1,27 +1,28 @@
 const router = require("express").Router()
 const passport = require("passport")
 const { Register } = require("../controllers/userauth")
-const { index, register, login } = require("../controllers/usercontroller")
+const {
+	index,
+	register,
+	login,
+	forgotpassword,
+} = require("../controllers/usercontroller")
+const { authenticated } = require("../controllers/checkcontroller")
 
-// Function to check if a user is already logged in
-const authenticated = (req, res, next) => {
-  if (req.isAuthenticated()) {
-    return res.redirect("/account")
-  }
-  next()
-}
-
+// Get routes
 router.get("/", authenticated, index)
 router.get("/register", authenticated, register)
 router.get("/login", authenticated, login)
+router.get("/forgotpassword", authenticated, forgotpassword)
 
+// Post routes
 router.post("/register", Register)
 router.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/account",
-    failureRedirect: "/login",
-    failureFlash: true,
-  })
+	"/login",
+	passport.authenticate("local", {
+		successRedirect: "/account",
+		failureRedirect: "/login",
+		failureFlash: true,
+	})
 )
 module.exports = router

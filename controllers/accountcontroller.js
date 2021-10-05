@@ -1,27 +1,28 @@
+const knex = require("../config/database")
+
 module.exports = {
-	index: (req, res) => {
+	account: (req, res) => {
 		res.render("account", {
 			title: "Account",
 			user: req.user.username,
 		})
 	},
 
-	blog: (req, res) => {
-		res.render("blog", {
-			title: "Recent posts",
-		})
-	},
 	dashboard: (req, res) => {
 		res.render("dashboard", {
-			title: "dashboard",
+			title: "Dashboard",
 		})
 	},
 
-	createpost: (req, res) => {
-		res.render("createpost")
+	createposts: (req, res) => {
+		res.render("createposts", {
+			title: "Create a post",
+		})
 	},
-	managepost: (req, res) => {
-		res.render("managepost")
+	manageposts: (req, res) => {
+		res.render("manageposts", {
+			title: "Your posts inventory",
+		})
 	},
 
 	logout: (req, res) => {

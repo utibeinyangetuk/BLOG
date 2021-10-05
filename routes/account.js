@@ -1,25 +1,36 @@
 const router = require("express").Router()
+const knex=require("../config/database")
 const {
-	index,
-	blog,
+	account,
 	dashboard,
-	createpost,
-	managepost,
+	createposts,
+	manageposts,
 	logout,
 } = require("../controllers/accountcontroller")
+const { Notauthenticated } = require("../controllers/checkcontroller")
 
-const Notauthenticated = (req, res, next) => {
-	if (req.isAuthenticated()) {
-		return next()
-	}
-	res.redirect("/login")
-}
+// Get routes
+router.get("/", Notauthenticated, account)
+router.get("/dashboard", Notauthenticated, dashboard)
+router.get("/createposts", Notauthenticated, createposts)
+router.get("/manageposts", Notauthenticated, manageposts)
+router.get("/logout", Notauthenticated, logout)
 
-router.get("/", Notauthenticated, index)
-router.get("/blog", blog)
-router.get("/dashboard", dashboard)
-router.get("/createpost", createpost)
-router.get("/managepost", managepost)
-router.get("/logout", logout)
+
+
+//Post routes
+router.post('/',async (req, res) => {
+let {title,content}=req.body
+await knex("posts").insert({
+	author_id:req.user.id,
+	title:title,
+	content:content
+}).then((results) => {
+	console.log(results)
+return res.render("account");
+}).catch((err) => {
+	throw err
+})
+});
 
 module.exports = router

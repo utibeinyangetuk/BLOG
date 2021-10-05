@@ -1,5 +1,29 @@
 <h3>Welcome {{user}}</h3>
 
-<a href="/account/blog">blog</a>
 <a href="/account/dashboard">dashboard</a>
 <a href="/account/logout">Logout</a>
+
+<br>
+
+<div class="container">
+    <div class="heading">
+        <h2>Latest posts</h2>
+    </div>
+    <form action="#" method="POST">
+        {{#each post}}
+            <div class="blog-container">
+                <div class="blog">
+                    <img src="images/9.jpg" alt="#">
+                    <div class="content">
+                        <h2>{{title}}</h2>
+                        <span>by utibe inyangetuk</span>
+                        <p>{{content}} </p>
+                        <a href="#" class="readmore">continue reading</a>
+                    </div>
+                </div>
+
+        {{/each}}
+</div>
+
+</form>
+</div>
