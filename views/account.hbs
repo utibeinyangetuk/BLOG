@@ -19,9 +19,11 @@
 
 <div class="container">
     <div class="heading">
+        <hr>
         <h2>Latest posts</h2>
+        <hr>
     </div>
-    <form action="#" method="POST">
+    <form action="/" method="POST">
         {{#each post}}
             <div class="blog-container">
                 <div class="blog">
@@ -30,7 +32,7 @@
                         <h2>Title: {{title}}</h2>
                         <span>By: {{author_name}} <br></span>
                         <p>Body: {{content}} </p>
-                        <a href="#" class="readmore">continue reading</a>
+                        <a href="/account/posts/{{id}}" class="readmore">continue reading</a>
                     </div>
                 </div>
                 <hr>

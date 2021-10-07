@@ -3,7 +3,7 @@ module.exports = {
 	insert: async (posts) => {
 		return await knex("posts").insert(posts)
 	},
-    select:async(posts)=>{
-        return await knex("posts").select()
-    }
+	select: async () => {
+		return await knex("posts").select()
+	},
 }

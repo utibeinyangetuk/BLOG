@@ -7,7 +7,6 @@ module.exports = {
 				title: "Account",
 				user: req.user.username,
 				post: results,
-				author_name: req.user.username,
 			})
 		})
 	},
@@ -26,6 +25,17 @@ module.exports = {
 	manageposts: (req, res) => {
 		res.render("manageposts", {
 			title: "Your posts inventory",
+		})
+	},
+	readposts: async (req, res) => {
+		let { id } = req.params
+		let post = []
+		if (id) {
+			post = await knex("posts").where("id", id).first()
+		}
+		return res.render("readmore", {
+			post: post,
+			title: `${post.title}`,
 		})
 	},
 

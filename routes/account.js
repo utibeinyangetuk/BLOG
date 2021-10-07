@@ -5,6 +5,7 @@ const {
 	dashboard,
 	createposts,
 	manageposts,
+	readposts,
 	logout,
 } = require("../controllers/accountcontroller")
 const { Notauthenticated } = require("../controllers/checkcontroller")
@@ -15,6 +16,7 @@ router.get("/", Notauthenticated, account)
 router.get("/dashboard", Notauthenticated, dashboard)
 router.get("/createposts", Notauthenticated, createposts)
 router.get("/manageposts", Notauthenticated, manageposts)
+router.get("/posts/:id", readposts)
 router.get("/logout", Notauthenticated, logout)
 
 //Post routes

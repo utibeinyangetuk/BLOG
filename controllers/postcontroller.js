@@ -20,7 +20,7 @@ module.exports = {
 				throw err
 			})
 	},
-	Selectpost: (req, res) => {
-		select()
+	Selectpost: async (req, res) => {
+		await select()
 	},
 }
