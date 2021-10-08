@@ -10,7 +10,6 @@ module.exports = {
 				},
 			])
 			.then(() => {
-				console.log("post recorded");
 				res.redirect(`/account/posts/${req.params.post_id}`);
 			})
 			.catch((err) => {
