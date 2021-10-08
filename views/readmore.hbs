@@ -5,3 +5,22 @@
 <p>By: {{post.author_name}} </p>
 <p>published on: {{post.created_at}} </p>
 <p>{{post.content}}</p>
+
+<hr>
+<hr>
+<h2><u>COMMENTS</u></h2>
+
+
+{{#each post.comments}}
+   <b>{{name}}------></b>{{content}}
+
+        <hr>
+
+{{/each}}
+
+<hr>
+<h3>make a comment</h3>
+<form action="/account/comments/{{post.id}}" method="POST">
+    <input type="text" name="comment" placeholder="Add a comment..." required>
+    <button type="submit">submit</button>
+</form>

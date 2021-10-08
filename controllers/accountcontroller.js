@@ -32,6 +32,7 @@ module.exports = {
 		let post = []
 		if (id) {
 			post = await knex("posts").where("id", id).first()
+			post.comments = await knex("comments").where("post_id", post.id);
 		}
 		return res.render("readmore", {
 			post: post,

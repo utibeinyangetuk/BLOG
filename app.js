@@ -41,6 +41,7 @@ app.use("/", indexRouter)
 app.use("/account", accountRouter)
 
 
+// TODO: uncomment this part out 
 // catch 404 and forward to error handler
 // app.use((req, res, next) => {
 //   next(createError(404))
