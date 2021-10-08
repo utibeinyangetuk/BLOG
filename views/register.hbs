@@ -1,27 +1,37 @@
 <ul>
 
-    {{#each errors}}
-        <li>{{message}}</li>
-    {{/each}}
+	{{#each errors}}
+		<li>{{message}}</li>
+	{{/each}}
 
 </ul>
 
 <form action="/register" method="POST">
 
-    <div>
-        <input type="text" name="username" placeholder="Username" required>
-    </div>
-    <div>
-        <input type="email" name="email" placeholder="Email" required>
-    </div>
-    <div>
-        <input type="password" name="password" placeholder="Password" required>
-    </div>
-    <div>
-        <input type="password" name="confirm_password" placeholder="Confirm password" required>
-    </div>
-    <div>
-        <input type="submit" value="signup">
-    </div>
-    <a href="/login">Already got an account?</a>
+	<div>
+		<input type="text" name="username" placeholder="Username" required />
+	</div>
+
+	<div>
+		<input type="email" name="email" placeholder="Email" required />
+	</div>
+
+	<div>
+		<input type="password" name="password" placeholder="Password" required />
+	</div>
+	<div>
+		<input
+			type="password"
+			name="password2"
+			placeholder="Confirm password"
+			required
+		/>
+	</div>
+
+	<div>
+		<input type="submit" value="signup" />
+	</div>
+
+	<a href="/login">Already got an account?</a>
+
 </form>

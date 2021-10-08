@@ -1,33 +1,35 @@
-const bcrypt = require("bcrypt")
-const { insert,select } = require("../models/user")
+const bcrypt = require("bcrypt");
+const knex = require("../config/database");
+const { insert, select } = require("../models/user");
 
 module.exports = {
 	Register: async (req, res) => {
-		let { username, email, password, confirm_password } = req.body
+		let { username, email, password, password2 } = req.body;
 
-		// form validation
-		let errors = []
-		if (!username || !email || !password || !confirm_password) {
-			errors.push({ message: "Please enter all fields" })
+		// form validation.
+		let errors = []; //Create an empty array where all errors will be pushed to.
+		if (!username || !email || !password || !password2) {
+			errors.push({ message: "Please complete all fields" });
 		}
-
 		if (password.length < 5) {
-			errors.push({ message: "Password should be at least 5 characters long" })
+			errors.push({ message: "Password should be at least 5 characters long" });
 		}
-		if (password != confirm_password) {
-			errors.push({ message: "Passwords do not match" })
+		if (password != password2) {
+			errors.push({ message: "Passwords do not match" });
 		}
 		if (errors.length > 0) {
-			res.render("register", { errors })
+			res.render("register", { errors });
 		} else {
-			//If form validation has passed
-			let hashedPassword = await bcrypt.hash(password, 10)
-			await select()
+			let hashedPassword = await bcrypt.hash(password, 10); // Encrypt the password before storing it in the database.
+
+			await select(email) // Loops through the database to see if the email has already been registered.
 				.then((results) => {
-					if (results.rows > 0) {
-						errors.push({ message: "User already exist" })
-						res.render("register", { errors })
+					if (results[0]) {
+						// Throw an error if user exists.
+						errors.push({ message: "Email is already registered" });
+						res.render("register", { errors });
 					} else {
+						// If user doesn't exist,create the user.
 						insert([
 							{
 								username: username,
@@ -36,17 +38,20 @@ module.exports = {
 							},
 						])
 							.then(() => {
-								req.flash("success_msg", "Registration successful,please login")
-								res.redirect("/login")
+								req.flash(
+									"success_msg",
+									"Registration successful,please login"
+								);
+								res.redirect("/login");
 							})
 							.catch((err) => {
-								throw err
-							})
+								throw err;
+							});
 					}
 				})
 				.catch((err) => {
-					throw err
-				})
+					throw err;
+				});
 		}
 	},
-}
+};
