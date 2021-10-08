@@ -10,6 +10,7 @@ module.exports = {
 				},
 			])
 			.then(() => {
+				req.flash("success_msg", "Your comment has been sent successfully✅");
 				res.redirect(`/account/posts/${req.params.post_id}`);
 			})
 			.catch((err) => {

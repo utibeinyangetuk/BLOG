@@ -11,6 +11,21 @@
 <h2><u>COMMENTS</u></h2>
 
 
+<ul>
+    {{#if messages.success_msg}}
+        <li>{{messages.success_msg}}</li>
+    {{/if}}
+</ul>
+
+<ul>
+    {{#if messages.error}}
+        <li>{{messages.error}}</li>
+    {{/if}}
+</ul>
+
+
+
+
 {{#each post.comments}}
    <b>{{name}}------></b>{{content}}
 
