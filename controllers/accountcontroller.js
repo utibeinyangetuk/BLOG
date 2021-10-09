@@ -31,6 +31,19 @@ module.exports = {
 			});
 		});
 	},
+	deleteposts: async (req, res) => {
+		let { id } = req.params;
+		await knex("posts")
+			.del()
+			.where("id", id)
+			.then(() => {
+				req.flash("success_msg", "Post deleted✅");
+				return res.redirect("/account/manageposts");
+			})
+			.catch((err) => {
+				throw err;
+			});
+	},
 
 	readposts: async (req, res) => {
 		let { id } = req.params;

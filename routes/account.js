@@ -7,6 +7,7 @@ const {
 	manageposts,
 	readposts,
 	logout,
+	deleteposts,
 } = require("../controllers/accountcontroller");
 const { Notauthenticated } = require("../controllers/checkcontroller");
 const { Comments } = require("../controllers/commentcontroller");
@@ -18,19 +19,7 @@ router.get("/dashboard", Notauthenticated, dashboard);
 router.get("/createposts", Notauthenticated, createposts);
 router.get("/manageposts", Notauthenticated, manageposts);
 router.get("/posts/:id", readposts);
-router.get("/posts/delete/:id", async (req, res) => {
-	let post_id = req.params.id;
-	await knex("posts")
-		.del()
-		.where("id", post_id)
-		.then(() => {
-			req.flash("success_msg", "Your post has been deleted");
-			return res.redirect("/account/manageposts");
-		})
-		.catch((err) => {
-			console.log(err);
-		});
-});
+router.get("/posts/delete/:id", deleteposts);
 
 
 router.get("/logout", Notauthenticated, logout);
