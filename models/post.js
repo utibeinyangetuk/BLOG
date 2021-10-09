@@ -9,4 +9,7 @@ module.exports = {
 	viewpost: async (posts) => {
 		return await knex("posts").where("id", posts).first();
 	},
+	manageposts: async (posts) => {
+		return await knex("posts").where("author_id", posts);
+	},
 };

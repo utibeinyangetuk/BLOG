@@ -1,0 +1,42 @@
+<a href="/account/dashboard">back</a>
+
+<ul>
+    {{#if messages.success_msg}}
+        <li>{{messages.success_msg}}</li>
+    {{/if}}
+</ul>
+
+<ul>
+    {{#if messages.error}}
+        <li>{{messages.error}}</li>
+    {{/if}}
+</ul>
+
+
+<table>
+    <thead>
+        <tr>
+            <th>Description</th>
+            <th>Published date</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {{#each posts}}
+            <tr>
+                <td>
+                    {{title}}
+                    <hr>
+                </td>
+                <td>
+                    {{created_at}}
+                    <hr>
+                </td>
+                <td><a href="/account/posts/{{id}}">view</a></td>
+                <td><a href="/account/posts/edit/{{id}}">edit </a></td>
+                <td><a href="/account/posts/delete/{{id}}">delete</a></td>
+            </tr>
+
+        {{/each}}
+    </tbody>
+</table>

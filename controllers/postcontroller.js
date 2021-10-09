@@ -1,9 +1,8 @@
-const knex = require("../config/database")
-const { insert, select } = require("../models/post")
+const { insert, select } = require("../models/post");
 
 module.exports = {
 	Insertpost: async (req, res) => {
-		let { title, content } = req.body
+		let { title, content } = req.body;
 		await insert([
 			{
 				author_id: req.user.id,
@@ -13,14 +12,14 @@ module.exports = {
 			},
 		])
 			.then(() => {
-				req.flash("success_msg", "Post uploaded successfully")
-				return res.redirect("/account")
+				req.flash("success_msg", "Post uploaded successfully");
+				return res.redirect("/account");
 			})
 			.catch((err) => {
-				throw err
-			})
+				throw err;
+			});
 	},
 	Selectpost: async (req, res) => {
-		await select()
+		await select();
 	},
-}
+};

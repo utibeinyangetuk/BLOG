@@ -1,5 +1,5 @@
 const knex = require("../config/database");
-const { select, viewpost } = require("../models/post");
+const { select, viewpost, manageposts } = require("../models/post");
 module.exports = {
 	account: async (req, res) => {
 		await select().then((results) => {
@@ -22,11 +22,16 @@ module.exports = {
 			title: "Create a post",
 		});
 	},
-	manageposts: (req, res) => {
-		res.render("manageposts", {
-			title: "Your posts inventory",
+	manageposts: async (req, res) => {
+		let { id } = req.user;
+		await manageposts(id).then((results) => {
+			return res.render("manageposts", {
+				title: "your recent posts",
+				posts: results,
+			});
 		});
 	},
+
 	readposts: async (req, res) => {
 		let { id } = req.params;
 		let post = [];
