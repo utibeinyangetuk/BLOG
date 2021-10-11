@@ -1,0 +1,29 @@
+<a href="/account/manageposts">back</a>
+
+<form action="" method="POST">
+    <ul>
+        {{#if messages.success_msg}}
+            <li>{{messages.success_msg}}</li>
+        {{/if}}
+    </ul>
+
+    <ul>
+        {{#if messages.error}}
+            <li>{{messages.error}}</li>
+        {{/if}}
+    </ul>
+
+    <h3>Make changes to your post.</h3>
+
+    <div class="form-box">
+        <input type="text" name="title" value="{{post.title}}" />
+    </div>
+
+    <div class="form-box">
+        <textarea rows="25" cols="90" name="content">{{post.content}}</textarea>
+    </div>
+    <div class="form-submit">
+        <input type="submit" value="Update" />
+    </div>
+
+</form>
