@@ -1,5 +1,10 @@
 const knex = require("../config/database");
-const { select, viewpost, manageposts } = require("../models/post");
+const {
+	select,
+	viewpost,
+	manageposts,
+	updateposts,
+} = require("../models/post");
 module.exports = {
 	account: async (req, res) => {
 		await select().then((results) => {
@@ -10,13 +15,11 @@ module.exports = {
 			});
 		});
 	},
-
 	dashboard: (req, res) => {
 		res.render("dashboard", {
 			title: "Dashboard",
 		});
 	},
-
 	createposts: (req, res) => {
 		res.render("createposts", {
 			title: "Create a post",
@@ -44,7 +47,6 @@ module.exports = {
 				throw err;
 			});
 	},
-
 	readposts: async (req, res) => {
 		let { id } = req.params;
 		let post = [];
@@ -57,7 +59,17 @@ module.exports = {
 			title: `${post.title}`,
 		});
 	},
-
+	updateposts: async (req, res) => {
+		let { id } = req.params;
+		let post = [];
+		if (id) {
+			post = await updateposts(id);
+		}
+		return res.render("updateposts", {
+			post: post,
+			title: "update your post",
+		});
+	},
 	logout: (req, res) => {
 		req.logout();
 		req.flash("success_msg", "You have been logged out successfully");

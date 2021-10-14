@@ -19,7 +19,28 @@ module.exports = {
 				throw err;
 			});
 	},
+
 	Selectpost: async (req, res) => {
 		await select();
+	},
+
+	updatepost: async (req, res) => {
+		let { id } = req.params;
+		let { title, content } = req.body;
+		if (id) {
+			await knex("posts")
+				.update({
+					title: title,
+					content: content,
+				})
+				.where("id", id)
+				.then(() => {
+					req.flash("success_msg", "Your post has been updated✅");
+					res.redirect("/account/manageposts");
+				})
+				.catch((err) => {
+					throw err;
+				});
+		}
 	},
 };
