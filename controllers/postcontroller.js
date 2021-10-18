@@ -1,5 +1,5 @@
 const { insert, select } = require("../models/post");
-
+const knex = require("../config/database")
 module.exports = {
 	Insertpost: async (req, res) => {
 		let { title, content } = req.body;
